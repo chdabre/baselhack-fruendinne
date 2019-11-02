@@ -1,0 +1,8 @@
+{
+  "name": "baselhack-fruendinne-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/chdabre/baselhack-fruendinne.git",
+  "author": "Dario Breitenstein <online@imakethings.ch>",
+  "license": "MIT"
+}
