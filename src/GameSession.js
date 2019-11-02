@@ -43,7 +43,7 @@ export default class GameSession {
 
   startMinigame () {
     const minigame = _.sample(this.minigames)
-    this.state = new GameStates.StateMinigame(minigame)
+    this.state = new GameStates.StateMiniGame(minigame)
   }
 
   endMinigame (playerScores) {
