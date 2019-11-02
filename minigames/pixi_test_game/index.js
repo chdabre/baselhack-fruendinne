@@ -1,9 +1,11 @@
 const params = new URLSearchParams(window.location.search)
 const playerId = params.get('playerId')
 const players = JSON.parse(params.get('players')) //array of all player
+let readyPlayers = {};
 
 let gameEnded = false
 let playerScores = {}
+let readyState = false; //true if all players are ready
 playerScores[playerId] = 0
 
 
@@ -42,6 +44,12 @@ loader
 
 //game setup function
 function setup() {
+    //setup readyPlayers Object
+    for(player in players){
+        readyPlayers[player] = false;
+    }
+
+
   let sprite = new PIXI.Sprite(loader.resources.flintstone.texture)
 
 
@@ -51,6 +59,8 @@ function setup() {
     fill: 0xffffff,
     align: 'center'
   });
+
+
 
   // Set the initial position
   sprite.anchor.set(0.5);
@@ -79,7 +89,6 @@ function setup() {
     sprite.scale.x *= 1.25;
     sprite.scale.y *= 1.25;
     sprite.angle += 30;
-    text.scale.x *= 1.05;
     sprite.tint = Math.random() * 0xFFFFFF;
 
     //update score
@@ -90,8 +99,10 @@ function setup() {
     parent.postMessage({
       source: 'minigame',
       playerId,
-      score: playerScores[playerId]
+      score: playerScores[playerId],
     }, 'http://localhost:8081')
+
+    console.log(players)
 
 
 
@@ -105,6 +116,10 @@ function setup() {
       if (msg.data.playerId !== playerId) {
         playerScores[msg.data.playerId] = msg.data.score
       }
+      if(testStart(msg.data)){
+          readyState = true;
+          console.log("all ready!")
+      }
       testWin()
     }
   })
@@ -114,12 +129,7 @@ function setup() {
   app.ticker.maxFPS = 60;
   app.ticker.add(() => {
     sprite.angle += 1;
-    text = new PIXI.Text(playerScores[playerId], {
-        fontFamily: 'Arial',
-        fontSize: 24,
-        fill: 0xffffff,
-        align: 'center'
-      });
+   
 
   })
 }
@@ -127,8 +137,24 @@ function setup() {
 
 loader.on("complete", () => {
   //send ready signal to other clients
+  parent.postMessage({
+    source: 'minigame',
+    playerId,
+    score: playerScores[playerId],
+    ready: true,
+  }, 'http://localhost:8081')
+
 })
 
+
+function testStart(data){
+    //console.log("testing ready")
+    readyPlayers[data.playerId] = data.ready;
+    for(player in readyPlayers){
+        if(!player) return false
+    }
+    return true
+}
 
 function testWin() {
   Object.keys(playerScores).forEach(key => {
