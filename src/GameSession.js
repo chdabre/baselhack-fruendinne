@@ -42,7 +42,12 @@ export default class GameSession {
   }
 
   startMinigame () {
+    // the following line selects a random game:
     const minigame = _.sample(this.minigames)
+
+    // for testing -> select a specific game -> work in progress
+    // const minigame = this.minigames[this.minigames.length]
+
     this.state = new GameStates.StateMinigame(minigame)
   }
 
