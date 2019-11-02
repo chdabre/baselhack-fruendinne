@@ -4,6 +4,7 @@ const button = document.getElementById('btn')
 const params = new URLSearchParams(window.location.search)
 const playerId = params.get('playerId')
 
+let gameEnded = false
 let playerScores = {}
 playerScores[playerId] = 0
 gameEl.innerText = playerScores[playerId]
@@ -30,15 +31,32 @@ window.addEventListener('message', msg => {
 
 function testWin () {
   Object.keys(playerScores).forEach(key => {
-    if (playerScores[key] >= 100) {
+    if (playerScores[key] >= 10) {
+      // Someone has won.
+      if (key === playerId) {
+        // I have won.
+        document.getElementById('you_win').style.display = 'block'
+      } else {
+        // Someone else has won.
+        document.getElementById('you_lose').style.display = 'block'
+      }
 
+      // I am the master player and must report the results
+      if (playerId === '0') {
+        sendWinSignal(playerScores)
+      }
     }
   })
 }
 
-function sendWinSignal () {
-  parent.postMessage({
-    source: 'minigame',
-    event: 'win'
-  }, 'http://localhost:8081')
+function sendWinSignal (playerScores) {
+  if (!gameEnded) {
+    parent.postMessage({
+      source: 'minigame',
+      event: 'win',
+      playerScores
+    }, 'http://localhost:8081')
+
+    gameEnded = true
+  }
 }

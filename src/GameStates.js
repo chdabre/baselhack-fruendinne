@@ -1,6 +1,10 @@
-import Minigame from './Minigame'
-
 export class StateWaitingForPlayers {
+  constructor () {
+    this.name = this.constructor.name
+  }
+}
+
+export class StateGameIdle {
   constructor () {
     this.name = this.constructor.name
   }

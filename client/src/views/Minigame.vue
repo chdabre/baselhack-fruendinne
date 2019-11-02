@@ -18,18 +18,31 @@ export default {
     }
   },
   created () {
-    window.addEventListener('message', msg => {
-      if (msg.data.source === 'minigame') {
-        this.$socket.emit('MINIGAME', {
-          sessionId: this.$store.state.session.id,
-          msg: msg.data
-        })
-      }
-    }, false)
+    window.addEventListener('message', this.onMessage, false)
+  },
+  beforeDestroy () {
+    window.removeEventListener('message', this.onMessage)
   },
   sockets: {
     MINIGAME (msg) {
       this.$refs.iframe.contentWindow.postMessage(msg, 'http://localhost:3000')
+    }
+  },
+  methods: {
+    onMessage (msg) {
+      if (msg.data.source === 'minigame') {
+        if (msg.data.event === 'win') {
+          this.$socket.emit('winGame', {
+            sessionId: this.$store.state.session.id,
+            playerScores: msg.data.playerScores
+          })
+        } else {
+          this.$socket.emit('MINIGAME', {
+            sessionId: this.$store.state.session.id,
+            msg: msg.data
+          })
+        }
+      }
     }
   }
 }

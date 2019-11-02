@@ -92,6 +92,21 @@ io.on('connection', socket => {
     }
   })
 
+  socket.on('winGame', (msg) => {
+    try {
+      const session = sessions[msg.sessionId]
+      session.endMinigame(msg.playerScores)
+
+      io.to(session.id).emit('SESSION', session)
+    } catch (e) {
+      socket.emit('ERROR', {
+        errorType: e.name,
+        errorText: `Error in [joinGame]: ${e.toString()}`
+      })
+      console.error(`Error in [joinGame]: ${e.toString()}`)
+    }
+  })
+
   socket.on('MINIGAME', (msg) => {
     try {
       const session = sessions[msg.sessionId]

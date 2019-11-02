@@ -22,7 +22,10 @@ export default class GameSession {
       if (this.players.length < MAX_PLAYERS) {
         const existingPlayer = _.find(this.players, player => player.name === name)
         if (!existingPlayer) {
-          return this.players.push({ name })
+          return this.players.push({
+            name,
+            score: 0
+          })
         } else {
           throw 'NameAlreadyTaken'
         }
@@ -41,5 +44,14 @@ export default class GameSession {
   startMinigame () {
     const minigame = _.sample(this.minigames)
     this.state = new GameStates.StateMinigame(minigame)
+  }
+
+  endMinigame (playerScores) {
+    console.log(playerScores)
+    Object.keys(playerScores).forEach(key => {
+      this.players[key].score += playerScores[key]
+    })
+
+    this.state = new GameStates.StateGameIdle()
   }
 }

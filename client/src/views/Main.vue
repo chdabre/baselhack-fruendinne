@@ -11,10 +11,23 @@
       >Start Game</v-btn>
     </template>
 
+    <!-- Minigame -->
     <Minigame
       v-if="session && session.state.name === 'StateMinigame'"
       :game="session.state.game"
     ></Minigame>
+
+    <!-- Idle -->
+    <div
+      v-if="session && session.state.name === 'StateGameIdle'"
+    >
+      {{ session.players }}
+      <v-btn
+        block
+        color="primary"
+        @click="startGame"
+      >New Minigame</v-btn>
+    </div>
   </v-container>
 </template>
 
