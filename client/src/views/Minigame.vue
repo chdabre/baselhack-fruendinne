@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     iframeUrl () {
-      return this.game.url + '?playerId=' + this.$store.state.playerId
+      return this.game.url + '?playerId=' + this.$store.state.playerId + '&players=' + JSON.stringify(this.$store.state.session.players)
     }
   },
   created () {

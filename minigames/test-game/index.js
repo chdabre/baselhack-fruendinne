@@ -51,12 +51,14 @@ function testWin () {
 
 function sendWinSignal (playerScores) {
   if (!gameEnded) {
-    parent.postMessage({
-      source: 'minigame',
-      event: 'win',
-      playerScores
-    }, 'http://localhost:8081')
+    setTimeout(() => {
+      parent.postMessage({
+        source: 'minigame',
+        event: 'win',
+        playerScores
+      }, 'http://localhost:8081')
 
-    gameEnded = true
+      gameEnded = true
+    }, 1000)
   }
 }
