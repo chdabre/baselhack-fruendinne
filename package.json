@@ -6,10 +6,12 @@
   "author": "Dario Breitenstein <online@imakethings.ch>",
   "license": "MIT",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node -r esm src/index.js"
   },
   "dependencies": {
+    "esm": "^3.2.25",
     "express": "^4.17.1",
+    "lodash": "^4.17.15",
     "socket.io": "^2.3.0"
   }
 }
