@@ -1,3 +1,5 @@
 {
-  "name": "test-game"
+  "name": "test-game",
+  "displayName": "Count to Ten!",
+  "description": "Who presses the button ten times first?"
 }

@@ -1,8 +1,18 @@
 <template>
   <div class="home">
-    <button
-      @click="requestSession"
-    >New Game</button>
+    <div class="logo-container">
+      <img
+        src="../assets/logo.png"
+      >
+    </div>
+    <div class="button-container">
+      <button
+        @click="requestSession"
+      >New Game</button>
+      <button
+        @click="$router.push('/client')"
+      >Join Game</button>
+    </div>
   </div>
 </template>
 
@@ -30,3 +40,36 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  margin-top: 50px;
+
+  img {
+    width: 250px;
+  }
+}
+
+.button-container {
+  width: 100%;
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 100px;
+
+  button {
+    margin-top: 20px;
+    width: 300px;
+    height: 75px;
+    font-size: 2rem;
+    background-color: lightgray;
+    border: none;
+  }
+}
+</style>
