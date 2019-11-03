@@ -47,7 +47,8 @@ export class StateRulesMain {
   startGame () {
     //this.session.setState(new StatePlayerTurn(this.session))
     //this.session.playerTurn = 0
-    const miniGame = _.sample(this.session.minigames)
+    // const miniGame = _.sample(this.session.minigames)
+    const miniGame = this.session.minigames[0];
     this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
