@@ -1,5 +1,6 @@
 {
   "name": "math",
   "displayName": "Mental Calculations",
-  "discription": "Think fast and calculate the numbers together!"
+  "discription": "Think fast and calculate the numbers together!",
+  "active": true
 }

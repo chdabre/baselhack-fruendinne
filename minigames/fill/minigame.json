@@ -1,7 +1,8 @@
 {
   "name": "fill",
   "displayName": "Fill the Shape!",
-  "description": "Who is the fastest to fill the whole shape?"
+  "description": "Who is the fastest to fill the whole shape?",
+  "active": true
 }
 
 

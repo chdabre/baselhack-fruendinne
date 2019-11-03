@@ -1,5 +1,6 @@
 {
   "name": "pixi_test_game",
   "displayName": "Tap Fast",
-  "description": "Tap as fast as you can on the icon"
+  "description": "Tap as fast as you can on the icon",
+  "active": true
 }

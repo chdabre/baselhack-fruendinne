@@ -1,5 +1,6 @@
 {
   "name": "test-game",
   "displayName": "Count to Ten!",
-  "description": "Who presses the button ten times first?"
+  "description": "Who presses the button ten times first?",
+  "active": true
 }

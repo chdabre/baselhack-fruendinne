@@ -107,7 +107,7 @@ export class StateMove {
   }
 
   startMiniGame () {
-    const miniGame = _.sample(this.session.minigames)
+    const miniGame = _.sample(this.session.minigames.filter(game => game.active))
     // const miniGame = _.find(this.session.minigames, { name: 'test-game' })
     this.session.setState(new StateMiniGame(this.session, miniGame))
   }
