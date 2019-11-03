@@ -13,7 +13,7 @@
 
     <!-- Minigame -->
     <Minigame
-      v-if="session && session.state.name === 'StateMinigame'"
+      v-if="session && session.state.name === 'StateMiniGame'"
       :game="session.state.game"
     ></Minigame>
 

@@ -69,31 +69,12 @@ export default class GameSession {
     return _.shuffle(board)
   }
 
-  startMinigame () {
-    // the following line selects a random game:
-    const minigame = _.sample(this.minigames)
-
-    // for testing -> select a specific game -> work in progress
-    // const minigame = this.minigames[this.minigames.length]
-
-    // this.state = new GameStates.StateMinigame(minigame)
-    this.state = new GameStates.StateMiniGame(minigame)
-  }
-
-  endMinigame (playerScores) {
-    console.log(playerScores)
-    Object.keys(playerScores).forEach(key => {
-      this.players[key].score += playerScores[key]
-    })
-
-    this.state = new GameStates.StateGameIdle()
-  }
-
   toObject() {
     return {
       id: this.id,
       state: {
-        name: this.state.name
+        name: this.state.name,
+        game: this.state.game || null
       },
       settings: this.settings,
       players: this.players,

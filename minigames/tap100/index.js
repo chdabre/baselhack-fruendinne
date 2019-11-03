@@ -21,7 +21,7 @@ if (!PIXI.utils.isWebGLSupported()) {
 
 
 
-//Main game 
+//Main game
 //Create a Pixi Application
 const app = new PIXI.Application({
   height: innerHeight,
@@ -147,7 +147,7 @@ loader.on("complete", () => {
 
 
 function updateClients(){
-  
+
   parent.postMessage({
     source: 'minigame',
     playerId,

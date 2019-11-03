@@ -4,6 +4,7 @@
     <v-text-field
       label="Name"
       v-model="nameInput"
+      @keydown.enter="joinGame"
     ></v-text-field>
     <v-btn
       block
