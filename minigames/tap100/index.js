@@ -4,43 +4,19 @@ const players = JSON.parse(params.get('players')) //array of all player
 let readyPlayers = {};
 let mainExecuted = false
 
+
 let gameEnded = false
 let playerScores = {}
 let readyState = false; //true if all players are ready
-playerScores[playerId] = 0
+playerScores[playerId] = -1000
 
 
+let clickCount = 0
+let finished = false
+let clicker = document.getElementById('clicker')
+let fertig = document.getElementById('fertig')
 
-let type = "WebGL"
-if (!PIXI.utils.isWebGLSupported()) {
-  type = "canvas"
-}
-
-
-
-//Main game
-//Create a Pixi Application
-const app = new PIXI.Application({
-  height: innerHeight,
-  width: innerWidth,
-  antialias: true,
-  backgroundColor: 0x212121
-});
-document.body.appendChild(app.view);
-
-// Scale mode for all textures, will retain pixelation
-PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-
-//load assets (images) into the local cache
-
-//init loader and
-const loader = PIXI.loader;
-
-//load assets and on Complete run setup()
-loader
-  .add('button', 'assets/flintstone.png')
-  .load(setup)
-
+setup();
 
 //game setup function
 function setup() {
@@ -48,20 +24,25 @@ function setup() {
     for(player in players){
         readyPlayers[player] = false;
     }
+    clicker.disabled =true;
+    fertig.disabled = true;
 
 
     window.addEventListener('message', msg => {
       if (msg.data.source === 'minigame') {
         if (msg.data.playerId !== playerId) {
           playerScores[msg.data.playerId] = msg.data.score
+
         }
         if(testStart(msg.data)){
             readyState = true;
+            console.log("all ready")
             if(!mainExecuted) main();
         if (!readyState) {
             console.log("not all clients are ready!")
         }
         }
+        console.log(playerScores)
         testWin()
       }
     })
@@ -76,33 +57,30 @@ function setup() {
 
   }
 
+function onClick() {
+  clickCount++;
+}
+
+function onFertig() {
+  let diff = 100 - clickCount;
+  //console.log("fertig_callback: " + playerScores)
+  playerScores[playerId] = Math.abs(diff);
+  finished = true;
+  clicker.disabled = true;
+  fertig.disabled = true;
+  //console.log(clicker.disabled)
+  updateClients();
+}
 
 function main() {
   mainExecuted = true
 
-  let text = new PIXI.Text(playerScores[playerId])
-  let button = new PIXI.Sprite(loader.resources.button.texture)
-  button.interactive = true
-  button.buttonMode = true
-
-
-  button.on('pointerdown', () => {
-    playerScores[playerId] += 10
-    text.text = playerScores[playerId]
-    updateClients()
-  })
-
-  app.stage.addChild(text)
-  app.stage.addChild(button)
-
+  clicker.disabled = false;
+  fertig.disabled = false;
 
 }
 
 
-loader.on("complete", () => {
-  console.log("loaded")
-
-})
 
 
 function updateClients(){
@@ -125,31 +103,69 @@ function testStart(data){
 
 function testWin() {
   Object.keys(playerScores).forEach(key => {
-    if (playerScores[key] >= 100) {
+    console.log("Scores:" )
+    console.log(playerScores)
+    console.log("Players:" )
+    console.log(players)
+    if (Object.keys(playerScores).length === players.length) {
       // Someone has won.
-      if (key === playerId) {
-        // I have won.
-        document.getElementById('you_win').style.display = 'block'
-      } else {
-        // Someone else has won.
-        document.getElementById('you_lose').style.display = 'block'
-      }
+    
+      if(playerScores[key] == 0){
+        if (key === playerId) {
+          // I have won.
+          document.getElementById('you_win').style.display = 'block'
+          document.getElementById('you_lose').style.display = 'none'
 
-      // I am the master player and must report the results
-      if (playerId === '0') {
-        sendWinSignal(playerScores)
+        } else {
+          // Someone else has won.
+          document.getElementById('you_lose').style.display = 'block'
+          document.getElementById('you_win').style.display = 'none'
+        }
+
       }
+      let validScores = true;
+      let highestScore = 0
+      for(id in playerScores){
+        if(playerScores[id]<=-1000) validScores = false;
+        console.log(validScores)
+      }
+        // I am the master player and must report the results
+      if (validScores && playerId === '0') {
+        setTimeout(sendWinSignal(playerScores), 1000)
+      }
+      
+
+      
     }
   })
 }
 
 
 function sendWinSignal(playerScores) {
+  let ranking = Object.keys(playerScores).sort((a, b) => {
+    return playerScores[a] - playerScores[b];
+  })
+
+  //ranking = Object.keys(playerScores)
+  console.log(Object.keys(playerScores).sort((a, b) => {
+    return playerScores[a] - playerScores[b];
+  }))
+
+  let points = Array.from(ranking);
+  for(let i = 0; i<ranking.length; i++){
+    points[i] = playerScores[ranking[i]];
+  }
+
+  let winReturn = {ranking, points};
+
+  console.log("WIN RETURN:")
+  console.log(winReturn)
+
   if (!gameEnded) {
     parent.postMessage({
       source: 'minigame',
       event: 'win',
-      playerScores
+      playerScores: winReturn,
     }, 'http://localhost:8081')
 
     gameEnded = true

@@ -30,8 +30,8 @@ export class StateWaitingForPlayers {
   }
 
   playersReady () {
-    if (this.session.players.length >= 1) {
-      this.session.setState(new StateRulesMain(this.session))
+    if (this.session.players.length >= 2) {
+      this.session.state = new StateRulesMain(this.session)
     } else {
       throw 'NotEnoughPlayers'
     }
@@ -45,8 +45,10 @@ export class StateRulesMain {
   }
 
   startGame () {
-    this.session.setState(new StatePlayerTurn(this.session))
-    this.session.playerTurn = 0
+    //this.session.state = new StatePlayerTurn(this.session)
+    //this.session.playerTurn = 0
+    const miniGame = _.sample(this.session.minigames)
+    this.session.state = new StateMiniGame(this.session, miniGame)
   }
 
 }
@@ -65,7 +67,6 @@ export class StatePlayerTurn {
   }
 
   startMove (diceResult) {
-    console.log('startMove')
     this.session.setState(new StateMove(this.session, diceResult))
     this.session.state.move()
   }
@@ -88,7 +89,6 @@ export class StateMove {
     }
 
     const targetField = this.session.board[this.session.players[playerTurn].position]
-    console.log(targetField)
     switch (targetField.type) {
       case 'basic':
         this.session.setState(new StatePlayerTurn(this.session, true))
