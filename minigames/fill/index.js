@@ -8,7 +8,7 @@ let mainExecuted = false
 let gameEnded = false
 let playerScores = {}
 let readyState = false; //true if all players are ready
-playerScores[playerId] = 0
+playerScores[playerId] = -1000
 
 let finished = false
 
@@ -212,7 +212,7 @@ function testWin() {
       }
         // I am the master player and must report the results
       if (validScores && playerId === '0') {
-        setTimeout(sendWinSignal(playerScores), 1000)
+        setTimeout(() => sendWinSignal(playerScores), 1000)
       }
     }
   })
@@ -239,6 +239,7 @@ function sendWinSignal(playerScores) {
   console.log("WIN RETURN:")
   console.log(winReturn)
 
+  // todo: activate after debug
   if (!gameEnded) {
     parent.postMessage({
       source: 'minigame',
