@@ -13,7 +13,8 @@
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "vuetify": "^2.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.0.0",
