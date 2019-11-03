@@ -4,6 +4,7 @@
     <v-text-field
       label="Name"
       v-model="nameInput"
+      @keydown.enter="joinGame"
     ></v-text-field>
     <v-btn
       block
@@ -28,7 +29,7 @@ export default {
   },
   created () {
     const oldPlayerId = localStorage.getItem(`playerId-${this.session.id}`)
-    if (oldPlayerId) this.$store.commit('setPlayerId', oldPlayerId)
+    if (oldPlayerId) this.$store.commit('setPlayerId', parseInt(oldPlayerId))
   },
   methods: {
     joinGame () {

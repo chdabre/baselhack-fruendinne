@@ -2,6 +2,7 @@ const params = new URLSearchParams(window.location.search)
 const playerId = params.get('playerId')
 const players = JSON.parse(params.get('players')) //array of all player
 let readyPlayers = {};
+let mainExecuted = false;
 
 let gameEnded = false
 let playerScores = {}
@@ -44,71 +45,10 @@ loader
 
 //game setup function
 function setup() {
-    //setup readyPlayers Object
-    for(player in players){
-        readyPlayers[player] = false;
-    }
-
-
-  let sprite = new PIXI.Sprite(loader.resources.flintstone.texture)
-
-
-  let text = new PIXI.Text(playerScores[playerId], {
-    fontFamily: 'Arial',
-    fontSize: 24,
-    fill: 0xffffff,
-    align: 'center'
-  });
-
-
-
-  // Set the initial position
-  sprite.anchor.set(0.5);
-  sprite.x = app.screen.width / 2;
-  sprite.y = app.screen.height / 2;
-
-
-  // Opt-in to interactivity
-  sprite.interactive = true;
-
-  // Shows hand cursor
-  sprite.buttonMode = true;
-
-  // Pointers normalize touch and mouse
-  sprite.on('pointerdown', onClick)
-
-  // Alternatively, use the mouse & touch events:
-  // sprite.on('click', onClick); // mouse-only
-  // sprite.on('tap', onClick); // touch-only
-    
-  app.stage.addChild(sprite);
-  app.stage.addChild(text);
-
-
-  function onClick() {
-    sprite.scale.x *= 1.25;
-    sprite.scale.y *= 1.25;
-    sprite.angle += 30;
-    sprite.tint = Math.random() * 0xFFFFFF;
-
-    //update score
-    playerScores[playerId]++;
-    text.text = playerScores[playerId]
-    console.log(playerScores[playerId])
-
-    parent.postMessage({
-      source: 'minigame',
-      playerId,
-      score: playerScores[playerId],
-    }, 'http://localhost:8081')
-
-    console.log(players)
-
-
-
-
+  //setup readyPlayers Object
+  for (player in players) {
+    readyPlayers[player] = false;
   }
-
 
 
   window.addEventListener('message', msg => {
@@ -116,22 +56,86 @@ function setup() {
       if (msg.data.playerId !== playerId) {
         playerScores[msg.data.playerId] = msg.data.score
       }
-      if(testStart(msg.data)){
-          readyState = true;
-          console.log("all ready!")
+      if (testStart(msg.data)) {
+        readyState = true;
+        if(!mainExecuted) main();
+        if (!readyState) {
+            console.log("not all clients are ready!")
+        }
       }
       testWin()
     }
   })
 
-  //Do stuff every animation Frame FPS = 60 max
-  app.ticker.minFPS = 30;
-  app.ticker.maxFPS = 60;
-  app.ticker.add(() => {
-    sprite.angle += 1;
-   
 
-  })
+}
+
+
+function main() {
+    mainExecuted = true
+    let sprite = new PIXI.Sprite(loader.resources.flintstone.texture)
+
+
+    let text = new PIXI.Text(playerScores[playerId], {
+      fontFamily: 'Arial',
+      fontSize: 24,
+      fill: 0xffffff,
+      align: 'center'
+    });
+  
+  
+  
+    // Set the initial position
+    sprite.anchor.set(0.5);
+    sprite.x = app.screen.width / 2;
+    sprite.y = app.screen.height / 2;
+  
+  
+    // Opt-in to interactivity
+    sprite.interactive = true;
+  
+    // Shows hand cursor
+    sprite.buttonMode = true;
+  
+    // Pointers normalize touch and mouse
+    sprite.on('pointerdown', onClick)
+  
+    // Alternatively, use the mouse & touch events:
+    // sprite.on('click', onClick); // mouse-only
+    // sprite.on('tap', onClick); // touch-only
+  
+    app.stage.addChild(sprite);
+    app.stage.addChild(text);
+  
+    //Do stuff every animation Frame FPS = 60 max
+    app.ticker.minFPS = 30;
+    app.ticker.maxFPS = 60;
+    app.ticker.add(() => {
+      sprite.angle += 1;
+  
+  
+    })
+  
+  
+    function onClick() {
+      sprite.scale.x *= 1.25;
+      sprite.scale.y *= 1.25;
+      sprite.angle += 30;
+      sprite.tint = Math.random() * 0xFFFFFF;
+  
+      //update score
+      playerScores[playerId]++;
+      text.text = playerScores[playerId]
+      console.log(playerScores[playerId])
+  
+      parent.postMessage({
+        source: 'minigame',
+        playerId,
+        score: playerScores[playerId],
+      }, 'http://localhost:8081')
+  
+      console.log(players)
+    }
 }
 
 
@@ -147,13 +151,13 @@ loader.on("complete", () => {
 })
 
 
-function testStart(data){
-    //console.log("testing ready")
-    readyPlayers[data.playerId] = data.ready;
-    for(player in readyPlayers){
-        if(!player) return false
-    }
-    return true
+function testStart(data) {
+  //console.log("testing ready")
+  readyPlayers[data.playerId] = data.ready;
+  for (player in readyPlayers) {
+    if (!player) return false
+  }
+  return true
 }
 
 function testWin() {
