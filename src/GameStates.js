@@ -31,7 +31,7 @@ export class StateWaitingForPlayers {
 
   playersReady () {
     if (this.session.players.length >= 2) {
-      this.session.state = new StateRulesMain(this.session)
+      this.session.setState(new StateRulesMain(this.session))
     } else {
       throw 'NotEnoughPlayers'
     }
@@ -45,10 +45,10 @@ export class StateRulesMain {
   }
 
   startGame () {
-    //this.session.state = new StatePlayerTurn(this.session)
+    //this.session.setState(new StatePlayerTurn(this.session))
     //this.session.playerTurn = 0
     const miniGame = _.sample(this.session.minigames)
-    this.session.state = new StateMiniGame(this.session, miniGame)
+    this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
 }
