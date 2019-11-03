@@ -107,8 +107,8 @@ export class StateMove {
   }
 
   startMiniGame () {
-    //const miniGame = _.sample(this.session.minigames)
-    const miniGame = _.find(this.session.minigames, { name: 'test-game' })
+    const miniGame = _.sample(this.session.minigames)
+    // const miniGame = _.find(this.session.minigames, { name: 'test-game' })
     this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
@@ -150,7 +150,7 @@ export class StateMiniGame {
     }
 
     this.session.setState(new StateMiniGameResult(this.session, playerScores))
-    this.session.state.moveMiniGame()
+    setTimeout(() => this.session.state.moveMiniGame(), 5000)
   }
 }
 export class StateMiniGameResult {
