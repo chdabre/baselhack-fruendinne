@@ -138,6 +138,19 @@ io.on('connection', socket => {
     }
   })
 
+  socket.on('rematch', (msg) => {
+    try {
+      const session = sessions[msg.sessionId]
+      session.state.rematch()
+    } catch (e) {
+      socket.emit('ERROR', {
+        errorType: e.name,
+        errorText: `Error in [startGame]: ${e.toString()}`
+      })
+      console.error(`Error in [startGame]: ${e.toString()}`)
+    }
+  })
+
   socket.on('MINIGAME', (msg) => {
     try {
       const session = sessions[msg.sessionId]

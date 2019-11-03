@@ -45,10 +45,10 @@ export class StateRulesMain {
   }
 
   startGame () {
-    //this.session.setState(new StatePlayerTurn(this.session))
-    //this.session.playerTurn = 0
-    const miniGame = _.sample(this.session.minigames)
-    this.session.setState(new StateMiniGame(this.session, miniGame))
+    this.session.setState(new StatePlayerTurn(this.session))
+    this.session.playerTurn = 0
+    // const miniGame = _.sample(this.session.minigames)
+    // this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
 }
@@ -85,7 +85,7 @@ export class StateMove {
     if (this.session.players[playerTurn].position < 0) { // Field before the start
       this.session.players[playerTurn].position = 0
     } else if (this.session.players[playerTurn].position >= BOARD_SIZE - 1) { // Win condition
-      this.win()
+      this.win(this.session.players[playerTurn])
     }
 
     const targetField = this.session.board[this.session.players[playerTurn].position]
@@ -112,8 +112,8 @@ export class StateMove {
     this.session.setState(new StateRulesSpecialField(this.session, field))
   }
 
-  win () {
-    this.session.setState(new StateWin(this.session))
+  win (winPlayer) {
+    this.session.setState(new StateWin(this.session, winPlayer))
   }
 }
 export class StateRulesSpecialField {
@@ -146,7 +146,7 @@ export class StateMiniGame {
     }
 
     this.session.setState(new StateMiniGameResult(this.session, playerScores))
-    this.session.state.moveMiniGame()
+    setTimeout(() => this.session.state.moveMiniGame(), 5000)
   }
 }
 export class StateMiniGameResult {
@@ -177,23 +177,29 @@ export class StateMoveMiniGame {
       if (this.session.players[i].position < 0) { // Field before the start
         this.session.players[i].position = 0
       } else if (this.session.players[i].position >= BOARD_SIZE - 1) { // Win condition
-        this.win()
+        this.win(this.session.players[i])
       }
     }
     this.session.setState(new StatePlayerTurn(this.session, true))
   }
 
-  win () {
-    this.session.setState(new StateWin(this.session))
+  win (winPlayer) {
+    this.session.setState(new StateWin(this.session, winPlayer))
   }
 }
 export class StateWin {
-  constructor (session) {
+  constructor (session, winPlayer) {
     this.name = this.constructor.name
     this.session = session
+    this.winPlayer = winPlayer
   }
 
   rematch () {
+    this.session.players.forEach(player => {
+      player.score = 0
+      player.position = Math.floor(BOARD_SIZE / 2)
+    })
+    this.session.playerTurn = 0
     this.session.setState(new StateRulesMain(this.session))
   }
 }
