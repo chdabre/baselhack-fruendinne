@@ -4,6 +4,7 @@ const players = JSON.parse(params.get('players')) //array of all player
 let readyPlayers = {};
 
 let gameEnded = false
+let dataSet = false;
 let playerScores = {}
 let playerResult = {}
 var num = new Array(4);
@@ -43,15 +44,19 @@ function setup() {
     if (msg.data.source === 'minigame') {
       if (msg.data.playerId !== playerId) {
         playerScores[msg.data.playerId] = msg.data.score;
-        num[0] = msg.data.num1;
-        num[1] = msg.data.num2;
-        num[2] = msg.data.num3;
-        num[3] = msg.data.num4;
-        ops[0] = " ";
-        ops[1] = msg.data.ops1;
-        ops[2] = msg.data.ops2;
-        ops[3] = msg.data.ops3;
-        calcResult = msg.data.result;
+
+        if(!dataSet && playerId !== "0"){
+          num[0] = msg.data.num1;
+          num[1] = msg.data.num2;
+          num[2] = msg.data.num3;
+          num[3] = msg.data.num4;
+          ops[0] = " ";
+          ops[1] = msg.data.ops1;
+          ops[2] = msg.data.ops2;
+          ops[3] = msg.data.ops3;
+          calcResult = msg.data.result;
+          dataSet = true;
+        }
       }
       if (testStart(msg.data)) {
         readyState = true;
@@ -100,6 +105,7 @@ function main() {
     fill: 0x000000,
     align: 'center'
   });
+  
   text.y = (app.screen.height / 2)-text.height
 
 
@@ -187,10 +193,28 @@ function testWin() {
 
 
 function sendWinSignal(playerScores) {
+    for(let i = 0; i<=playerResult.length; i++) {
+      playerScores[i] = Math.abs(playerResult[i]-calcResult);
+    }
+
+    let ranking = Object.keys(playerScores).sort((a, b) => {
+      return playerScores[a] - playerScores[b];
+    })
+  
+
+    
+  let points = Array.from(ranking);
+  for(let i = 0; i<ranking.length; i++){
+    points[i] = playerScores[ranking[i]];
+  }
+
+  let winReturn = {ranking, points};
+  console.log(winReturn);
+
     parent.postMessage({
       source: 'minigame',
       event: 'win',
-      playerScores
+      playerScores: winReturn,
     }, 'http://localhost:8081')
 
 
@@ -230,7 +254,7 @@ document.getElementById("numInput").addEventListener("submit", (e) => {
 function getCalculation() {
   //Create Variabels numbers and send it to others
   console.log("entered calc")
-  if (playerId == "0") {
+  if (playerId === "0") {
     console.log("player 0")
     let operations = ['+', '-', '*'];
     num[0] = Math.floor(Math.random() * 20 + 1);
@@ -248,19 +272,21 @@ function getCalculation() {
 
 
 
-    parent.postMessage({
-      source: 'minigame',
-      playerId,
-      score: playerScores[playerId],
-      num1: num[0],
-      num2: num[1],
-      num3: num[2],
-      num4: num[3],
-      ops1: ops[1],
-      ops2: ops[2],
-      ops3: ops[3],
-      result: calcResult,
-    }, 'http://localhost:8081')
+    if(!dataSet){
+      parent.postMessage({
+        source: 'minigame',
+        playerId,
+        score: playerScores[playerId],
+        num1: num[0],
+        num2: num[1],
+        num3: num[2],
+        num4: num[3],
+        ops1: ops[1],
+        ops2: ops[2],
+        ops3: ops[3],
+        result: calcResult,
+      }, 'http://localhost:8081')
+    }
 
   }
 }

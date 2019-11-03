@@ -13,10 +13,13 @@ body {
 
 #forminput {
   padding: 5px;
-  border-radius: 50px;
+  border-radius: 25px;
   height: 50px;
+  font-size: 16pt;
 }
 
 #submit{
   margin-top: 50px;
+  height:50px;
+  width:200px;
 }
