@@ -1,14 +1,19 @@
 <template>
   <div>
-    Main
+    <PlayingField
+      v-if="session"
+      :board="session.board"
+    />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import PlayingField from '../components/PlayingField'
 
 export default {
   name: 'main-game',
+  components: { PlayingField },
   props: {
     id: String
   },
@@ -30,7 +35,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

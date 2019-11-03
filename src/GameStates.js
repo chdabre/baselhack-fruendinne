@@ -1,20 +1,23 @@
 import * as _ from 'lodash'
-import { MAX_PLAYERS, BOARD_SIZE, SPECIAL_TYPES } from './GameSession'
+import { DINO_TYPES, MAX_PLAYERS, BOARD_SIZE, SPECIAL_TYPES } from './GameSession'
 
 export class StateWaitingForPlayers {
   constructor (session) {
     this.name = this.constructor.name
     this.session = session
+
+    this.dinos = _.shuffle(DINO_TYPES)
   }
 
   addPlayer (name) {
     if (this.session.players.length < MAX_PLAYERS) {
       const existingPlayer = _.find(this.session.players, player => player.name === name)
       if (!existingPlayer) {
-        return this.players.push({
+        return this.session.players.push({
           name,
           score: 0,
-          position: Math.floor(BOARD_SIZE / 2)
+          position: Math.floor(BOARD_SIZE / 2),
+          dino: this.dinos.pop()
         })
       } else {
         throw 'NameAlreadyTaken'
