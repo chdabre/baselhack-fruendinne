@@ -3,8 +3,26 @@ body {
   margin: 0;
 }
 
+#clicker_div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#fertig_div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 #clicker {
-  width: 200px;
+  width: 80%;
   height: 100px;
+  margin-top: 40%;
+}
+
+#fertig {
+  width: 80%;
+  height: 100px;
+  margin-top: 20%;
 }
