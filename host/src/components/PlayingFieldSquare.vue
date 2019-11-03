@@ -8,6 +8,7 @@
       v-for="(dino, index) in dinos"
       :key="index"
       :src="'/dinos/' + dino + '.png'"
+      :style="dinoTilt(index)"
     >
   </div>
 </template>
@@ -46,6 +47,14 @@ export default {
         bottom: OFFSET_Y + (this.location[0] * INTERVAL_Y) + '%',
         left: OFFSET_X + (this.location[1] * INTERVAL_X) + '%'
       }
+    }
+  },
+  methods: {
+    dinoTilt () {
+      let styleClass = `transform: rotate(${Math.random() * 20 - 10}deg)`
+      if (this.location[0] % 2 !== 0) styleClass += ` scaleX(-1);`
+
+      return styleClass
     }
   }
 }
