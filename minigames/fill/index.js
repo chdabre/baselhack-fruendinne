@@ -10,6 +10,7 @@ let playerScores = {}
 let readyState = false; //true if all players are ready
 playerScores[playerId] = 0
 
+let finished = false
 
 let type = "WebGL"
 if (!PIXI.utils.isWebGLSupported()) {
@@ -47,7 +48,7 @@ loader
 //game setup function
 function setup() {
   //setup readyPlayers Object
-  for (player in players) {
+  for (let player in players) {
     readyPlayers[player] = false;
   }
 
@@ -88,7 +89,6 @@ function main() {
   const startTime = Date.now()
   let gameDuration = -1
   const color1 = 0x95CDB8
-  const cBlack = 0x000000
   const cWhite = 0xffffff
   const cGray = 0xC5C5C5
 
@@ -128,14 +128,12 @@ function main() {
   const startX = innerWidth / 2
   let lineY = posY + height
   let lineWidth = 0;
-// noinspection JSSuspiciousNameCombination
-  const endX = posY
-// noinspection JSSuspiciousNameCombination
-  const endY = posX
 
 
   function onclick() {
     if (lineY <= posY) {
+      // finished the game:
+      finished = true
       gameDuration = Date.now() - startTime
       console.log(`You filled the triangle after ${gameDuration}ms`)
       playerScores[playerId] = gameDuration
@@ -163,11 +161,22 @@ function main() {
 }
 
 
+
+
+function updateClients(){
+
+  parent.postMessage({
+    source: 'minigame',
+    playerId,
+    score: playerScores[playerId],
+  }, 'http://localhost:8081')
+}
+
 // todo: methods imported from 'tap100'
 function testStart(data){
   //console.log("testing ready")
   readyPlayers[data.playerId] = data.ready;
-  for(player in readyPlayers){
+  for(let player in readyPlayers){
     if(!player) return false
   }
   return true
@@ -175,21 +184,35 @@ function testStart(data){
 
 function testWin() {
   Object.keys(playerScores).forEach(key => {
-    console.log(playerScores.keys)
+    console.log("Scores:" )
+    console.log(playerScores)
+    console.log("Players:" )
     console.log(players)
-    if (playerScores.length === players.length) {
+    if (Object.keys(playerScores).length === players.length) {
       // Someone has won.
-      if (key === playerId) {
-        // I have won.
-        document.getElementById('you_win').style.display = 'block'
-      } else {
-        // Someone else has won.
-        document.getElementById('you_lose').style.display = 'block'
-      }
 
-      // I am the master player and must report the results
-      if (playerId === '0') {
-        sendWinSignal(playerScores)
+      if(playerScores[key] == 0){
+        if (key === playerId) {
+          // I have won.
+          document.getElementById('you_win').style.display = 'block'
+          document.getElementById('you_lose').style.display = 'none'
+
+        } else {
+          // Someone else has won.
+          document.getElementById('you_lose').style.display = 'block'
+          document.getElementById('you_win').style.display = 'none'
+        }
+
+      }
+      let validScores = true;
+      let highestScore = 0
+      for(id in playerScores){
+        if(playerScores[id]<=-1000) validScores = false;
+        console.log(validScores)
+      }
+        // I am the master player and must report the results
+      if (validScores && playerId === '0') {
+        setTimeout(sendWinSignal(playerScores), 1000)
       }
     }
   })
@@ -197,11 +220,30 @@ function testWin() {
 
 
 function sendWinSignal(playerScores) {
+  let ranking = Object.keys(playerScores).sort((a, b) => {
+    return playerScores[a] - playerScores[b];
+  })
+
+  //ranking = Object.keys(playerScores)
+  console.log(Object.keys(playerScores).sort((a, b) => {
+    return playerScores[a] - playerScores[b];
+  }))
+
+  let points = Array.from(ranking);
+  for(let i = 0; i<ranking.length; i++){
+    points[i] = playerScores[ranking[i]];
+  }
+
+  let winReturn = {ranking, points};
+
+  console.log("WIN RETURN:")
+  console.log(winReturn)
+
   if (!gameEnded) {
     parent.postMessage({
       source: 'minigame',
       event: 'win',
-      playerScores
+      playerScores: winReturn,
     }, 'http://localhost:8081')
 
     gameEnded = true
