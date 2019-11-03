@@ -55,9 +55,14 @@ io.on('connection', socket => {
         session = new GameSession()
         sessions[session.id] = session
         socket.join(session.id)
+
+        session.on('update', session => {
+          console.log('SESSION UPDATE -> ' + session.state.name)
+          io.to(session.id).emit('SESSION_UPDATE', session)
+        })
       }
 
-      socket.emit('SESSION', session.toObject())
+      if (session) io.to(session.id).emit('SESSION_UPDATE', session.toObject())
     } catch (e) {
       socket.emit('ERROR', {
         errorType: e.name,
@@ -72,8 +77,6 @@ io.on('connection', socket => {
       const session = sessions[msg.sessionId]
       const name = msg.name
       const index = session.state.addPlayer(name) - 1
-
-      io.to(session.id).emit('SESSION', session.toObject())
       socket.emit('PLAYER', index)
     } catch (e) {
       socket.emit('ERROR', {
@@ -88,7 +91,6 @@ io.on('connection', socket => {
     try {
       const session = sessions[msg.sessionId]
       session.state.playersReady()
-      io.to(session.id).emit('SESSION', session.toObject())
     } catch (e) {
       socket.emit('ERROR', {
         errorType: e.name,
@@ -102,7 +104,6 @@ io.on('connection', socket => {
     try {
       const session = sessions[msg.sessionId]
       session.state.startGame()
-      io.to(session.id).emit('SESSION', session.toObject())
     } catch (e) {
       socket.emit('ERROR', {
         errorType: e.name,
@@ -112,12 +113,23 @@ io.on('connection', socket => {
     }
   })
 
+  socket.on('startMove', (msg) => {
+    try {
+      const session = sessions[msg.sessionId]
+      session.state.startMove(msg.diceResult)
+    } catch (e) {
+      socket.emit('ERROR', {
+        errorType: e.name,
+        errorText: `Error in [startMove]: ${e.toString()}`
+      })
+      console.error(`Error in [startMove]: ${e.toString()}`)
+    }
+  })
+
   socket.on('winGame', (msg) => {
     try {
       const session = sessions[msg.sessionId]
       session.state.endMinigame(msg.playerScores)
-
-      io.to(session.id).emit('SESSION', session.toObject())
     } catch (e) {
       socket.emit('ERROR', {
         errorType: e.name,

@@ -26,7 +26,7 @@ export default {
     }
   },
   sockets: {
-    SESSION (msg) {
+    SESSION_UPDATE (msg) {
       this.$store.commit('setSession', msg)
     },
     ERROR (msg) {
