@@ -135,7 +135,8 @@ export class StateMiniGame {
     this.session = session
     this.game = game
 
-    this.game.url = `http://localhost:3000/minigame/${this.game.name}/index.html`
+    this.game.url = `/minigame/${this.game.name}/index.html`
+    if (process.env.NODE_ENV !== 'production' ) this.game.url = 'http://localhost:3000' + this.game.url
   }
 
   endMinigame (playerScores) {
