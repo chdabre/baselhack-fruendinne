@@ -2,6 +2,7 @@
   <div
     class="playing-field-square"
     :style="offsetStyle"
+    :class="{ minigame: field.type === 'miniGame' }"
   >
     <img
       class="dino"
@@ -39,8 +40,8 @@ export default {
     },
     offsetStyle () {
       const OFFSET_X = 7
-      const OFFSET_Y = 4
-      const INTERVAL_X = 8.5
+      const OFFSET_Y = 2
+      const INTERVAL_X = 8.6
       const INTERVAL_Y = 14
 
       return {
@@ -66,12 +67,16 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 9%;
-  height: 11%;
+  width: 8.6%;
+  height: 14%;
 
   .dino {
     position: absolute;
     height: 70%;
+  }
+
+  &.minigame {
+    box-shadow: inset 0 0 20px red;
   }
 }
 </style>

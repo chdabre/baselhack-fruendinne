@@ -24,7 +24,6 @@ app.get('/', (req, res) => {
 
 http.listen(PORT, () => {
   console.log('listening on *' + PORT)
-
   console.log(Minigame.loadGames())
 })
 
@@ -126,16 +125,16 @@ io.on('connection', socket => {
     }
   })
 
-  socket.on('winGame', (msg) => {
+  socket.on('endMiniGame', (msg) => {
     try {
       const session = sessions[msg.sessionId]
       session.state.endMinigame(msg.playerScores)
     } catch (e) {
       socket.emit('ERROR', {
         errorType: e.name,
-        errorText: `Error in [winGame]: ${e.toString()}`
+        errorText: `Error in [endMiniGame]: ${e.toString()}`
       })
-      console.error(`Error in [winGame]: ${e.toString()}`)
+      console.error(`Error in [endMiniGame]: ${e.toString()}`)
     }
   })
 

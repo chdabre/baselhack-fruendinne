@@ -45,8 +45,8 @@ export default class GameSession extends EventEmitter {
 
   createBoard () {
     const NUM_BASIC = 27
-    const NUM_MINIGAMES = 15
-    const NUM_SPECIAL = 8
+    const NUM_MINIGAMES = 15 + 8
+    const NUM_SPECIAL = 0
 
     let board = []
     // Add Basic fields

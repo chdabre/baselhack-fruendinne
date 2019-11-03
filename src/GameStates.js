@@ -103,7 +103,8 @@ export class StateMove {
   }
 
   startMiniGame () {
-    const miniGame = _.sample(this.session.minigames)
+    //const miniGame = _.sample(this.session.minigames)
+    const miniGame = _.find(this.session.minigames, { name: 'test-game' })
     this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
@@ -138,11 +139,13 @@ export class StateMiniGame {
   }
 
   endMinigame (playerScores) {
-    Object.keys(playerScores).forEach(key => {
-      this.session.players[key].score += playerScores[key]
-    })
+    const points = playerScores.points
+    for (let i = 0; i < this.session.players.length; i++) {
+      this.session.players[i].score += points[i]
+    }
 
-    this.session.setState(new StatePlayerTurn(this.session))
+    this.session.setState(new StateMiniGameResult(this.session, playerScores))
+    this.session.state.moveMiniGame()
   }
 }
 export class StateMiniGameResult {
@@ -154,6 +157,7 @@ export class StateMiniGameResult {
 
   moveMiniGame () {
     this.session.setState(new StateMoveMiniGame(this.session, this.playerScores))
+    this.session.state.move()
   }
 }
 export class StateMoveMiniGame {
@@ -163,18 +167,11 @@ export class StateMoveMiniGame {
     this.playerScores = playerScores
   }
 
-  moveSteps () {
+  move () {
     const ranking = this.playerScores.ranking
-    let playerMoves = new Array(ranking.length).fill(0)
-
-    // How much does each player move
     for (let i = 0; i < ranking.length; i++) {
-      playerMoves[ranking[i]] = (ranking.length / 2) - i
-    }
-
-    for (let j = 0; j < playerMoves.length; j++) {
-      const numSteps = playerMoves[i]
-      this.session.players[i].position += numSteps
+      // How much does each player move
+      this.session.players[parseInt(ranking[i])].position += (ranking.length / 2) - i
 
       if (this.session.players[i].position < 0) { // Field before the start
         this.session.players[i].position = 0
@@ -182,7 +179,6 @@ export class StateMoveMiniGame {
         this.win()
       }
     }
-
     this.session.setState(new StatePlayerTurn(this.session, true))
   }
 

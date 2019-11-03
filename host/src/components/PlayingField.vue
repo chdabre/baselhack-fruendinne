@@ -1,5 +1,7 @@
 <template>
-  <div class="main-container">
+  <div
+    class="main-container"
+  >
     <div class="board-container">
       <PlayingFieldSquare
         v-for="(field, index) in board"
@@ -7,7 +9,7 @@
         :index="index"
         :field="field"
       ></PlayingFieldSquare>
-      <img alt="bg" class="background" src="../assets/background.png">
+      <img alt="bg" class="background" src="../assets/house.png">
     </div>
   </div>
 </template>
@@ -35,6 +37,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  background-image: url("../assets/background.png");
 
   .board-container {
     position: relative;
