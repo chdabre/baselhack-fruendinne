@@ -43,8 +43,10 @@ export class StateRulesMain {
   }
 
   startGame () {
-    this.session.state = new StatePlayerTurn(this.session)
-    this.session.playerTurn = 0
+    //this.session.state = new StatePlayerTurn(this.session)
+    //this.session.playerTurn = 0
+    const miniGame = _.sample(this.session.minigames)
+    this.session.state = new StateMiniGame(this.session, miniGame)
   }
 
 }
@@ -132,8 +134,12 @@ export class StateMiniGame {
     this.game.url = `http://localhost:3000/minigame/${this.game.name}/index.html`
   }
 
-  endMiniGame (playerScores) {
-    this.session.state = new StateMiniGameResult(this.session, playerScores)
+  endMinigame (playerScores) {
+    Object.keys(playerScores).forEach(key => {
+      this.session.players[key].score += playerScores[key]
+    })
+
+    this.session.state = new GameStates.StateRulesMain()
   }
 }
 export class StateMiniGameResult {

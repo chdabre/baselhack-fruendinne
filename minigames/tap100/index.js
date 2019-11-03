@@ -18,7 +18,7 @@ if (!PIXI.utils.isWebGLSupported()) {
 
 
 
-//Main game 
+//Main game
 //Create a Pixi Application
 const app = new PIXI.Application({
   height: innerHeight,
@@ -82,7 +82,6 @@ function main() {
 
   let text = new PIXI.Text(playerScores[playerId])
   let button = new PIXI.Sprite(loader.resources.button.texture)
-  let button = new PIXI.Sprite
   button.interactive = true
   button.buttonMode = true
 
@@ -107,7 +106,7 @@ loader.on("complete", () => {
 
 
 function updateClients(){
-  
+
   parent.postMessage({
     source: 'minigame',
     playerId,
