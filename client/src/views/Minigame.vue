@@ -25,7 +25,7 @@ export default {
   },
   sockets: {
     MINIGAME (msg) {
-      this.$refs.iframe.contentWindow.postMessage(msg, 'http://localhost:3000')
+      this.$refs.iframe.contentWindow.postMessage(msg, '*')
     }
   },
   methods: {

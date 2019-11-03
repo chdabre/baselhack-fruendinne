@@ -18,7 +18,7 @@ button.addEventListener('click', event => {
     source: 'minigame',
     playerId,
     score: playerScores[playerId]
-  }, 'http://localhost:8081')
+  }, '*')
 })
 
 window.addEventListener('message', msg => {
@@ -69,7 +69,7 @@ function sendWinSignal (playerScores) {
           ranking,
           points
         }
-      }, 'http://localhost:8081')
+      }, '*')
 
       gameEnded = true
     }, 1000)

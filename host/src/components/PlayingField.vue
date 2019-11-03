@@ -9,7 +9,8 @@
         :index="index"
         :field="field"
       ></PlayingFieldSquare>
-      <img alt="bg" class="background" src="../assets/house.png">
+      <img alt="bg" class="background" src="../assets/fields.png">
+      <img alt="bg" class="foreground" src="../assets/foreground.png">
     </div>
   </div>
 </template>
@@ -44,6 +45,12 @@ export default {
     height: 100%;
     .background {
       height: 100%;
+    }
+    .foreground {
+      position: absolute;
+      left: 0;
+      height: 100%;
+      z-index: 100;
     }
   }
 }
