@@ -1,0 +1,10 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+
+#clicker {
+  width: 200px;
+  height: 100px;
+}
