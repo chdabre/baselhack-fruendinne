@@ -43,10 +43,8 @@ export class StateRulesMain {
   }
 
   startGame () {
-    //this.session.state = new StatePlayerTurn(this.session)
-    //this.session.playerTurn = 0
-    const miniGame = _.sample(this.session.minigames)
-    this.session.state = new StateMiniGame(this.session, miniGame)
+    this.session.state = new StatePlayerTurn(this.session)
+    this.session.playerTurn = 0
   }
 
 }
@@ -139,7 +137,7 @@ export class StateMiniGame {
       this.session.players[key].score += playerScores[key]
     })
 
-    this.session.state = new GameStates.StateRulesMain()
+    this.session.state = new StatePlayerTurn()
   }
 }
 export class StateMiniGameResult {
