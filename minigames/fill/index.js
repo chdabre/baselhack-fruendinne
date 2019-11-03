@@ -136,17 +136,9 @@ function main() {
       finished = true
       gameDuration = Date.now() - startTime
       console.log(`You filled the triangle after ${gameDuration}ms`)
-      playerScores[playerId] = gameDuration
+      playerScores[playerId] = 1_000_000 - gameDuration
       updateClients()
     }
-    /*
-      fertig.on('pointerdown', () => {
-        let diff = 100 - clickCount;
-        console.log(playerScores)
-        playerScores[playerId] = Math.abs(diff);
-        updateClients();
-      })
-    */
     else {
       // just draw a line - simulating the growth of the triangle:
       const line = new PIXI.Graphics
@@ -170,6 +162,8 @@ function updateClients(){
     playerId,
     score: playerScores[playerId],
   }, 'http://localhost:8081')
+
+  console.log(`updateClients finished. playerId: ${playerId}, playerScores[playerId]: ${playerScores[playerId]}`)
 }
 
 // todo: methods imported from 'tap100'
@@ -188,31 +182,37 @@ function testWin() {
     console.log(playerScores)
     console.log("Players:" )
     console.log(players)
-    if (Object.keys(playerScores).length === players.length) {
-      // Someone has won.
 
-      if(playerScores[key] == 0){
-        if (key === playerId) {
-          // I have won.
-          document.getElementById('you_win').style.display = 'block'
-          document.getElementById('you_lose').style.display = 'none'
+    console.log(playerScores)
 
-        } else {
-          // Someone else has won.
-          document.getElementById('you_lose').style.display = 'block'
-          document.getElementById('you_win').style.display = 'none'
+    let allFinished = true;
+    for(let id in playerScores) {
+      if (playerScores[id] <= 0) allFinished = false;
+    }
+
+    if (allFinished) {
+      let won = true;
+      for (let other in playerScores) {
+        if (other !== playerId && playerScores[other] > playerScores[playerId]) {
+          won = false;
         }
+      }
 
+
+      if (won) {
+        // I have won.
+        document.getElementById('you_win').style.display = 'block'
+        document.getElementById('you_lose').style.display = 'none'
+
+      } else {
+        // Someone else has won.
+        document.getElementById('you_lose').style.display = 'block'
+        document.getElementById('you_win').style.display = 'none'
       }
-      let validScores = true;
-      let highestScore = 0
-      for(id in playerScores){
-        if(playerScores[id]<=-1000) validScores = false;
-        console.log(validScores)
-      }
+
         // I am the master player and must report the results
-      if (validScores && playerId === '0') {
-        setTimeout(() => sendWinSignal(playerScores), 2000)
+      if (playerId === '0') {
+        setTimeout(() => sendWinSignal(playerScores), 3000)
       }
     }
   })
@@ -239,7 +239,6 @@ function sendWinSignal(playerScores) {
   console.log("WIN RETURN:")
   console.log(winReturn)
 
-  // todo: activate after debug
   if (!gameEnded) {
     parent.postMessage({
       source: 'minigame',
