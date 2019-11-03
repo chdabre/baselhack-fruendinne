@@ -25,14 +25,14 @@ export default {
   },
   sockets: {
     MINIGAME (msg) {
-      this.$refs.iframe.contentWindow.postMessage(msg, 'http://localhost:3000')
+      this.$refs.iframe.contentWindow.postMessage(msg, '*')
     }
   },
   methods: {
     onMessage (msg) {
       if (msg.data.source === 'minigame') {
         if (msg.data.event === 'win') {
-          this.$socket.emit('winGame', {
+          this.$socket.emit('endMiniGame', {
             sessionId: this.$store.state.session.id,
             playerScores: msg.data.playerScores
           })

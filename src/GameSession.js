@@ -2,6 +2,7 @@ import { makeId } from './utils'
 import * as _ from 'lodash'
 import * as GameStates from './GameStates'
 import Minigame from './Minigame'
+import { EventEmitter } from 'events'
 
 export const MIN_PLAYERS = 2
 export const MAX_PLAYERS = 10
@@ -29,8 +30,10 @@ export const DINO_TYPES = [
   'rita'
 ]
 
-export default class GameSession {
+export default class GameSession extends EventEmitter {
   constructor () {
+    super()
+
     this.id = makeId(4)
     this.state = new GameStates.StateWaitingForPlayers(this)
     this.settings = {}
@@ -42,8 +45,8 @@ export default class GameSession {
 
   createBoard () {
     const NUM_BASIC = 27
-    const NUM_MINIGAMES = 15
-    const NUM_SPECIAL = 8
+    const NUM_MINIGAMES = 15 + 8
+    const NUM_SPECIAL = 0
 
     let board = []
     // Add Basic fields
@@ -69,12 +72,22 @@ export default class GameSession {
     return _.shuffle(board)
   }
 
+  setState(state) {
+    this.state = state
+    this.update()
+  }
+
+  update() {
+    this.emit('update', this.toObject())
+  }
+
   toObject() {
     return {
       id: this.id,
       state: {
         name: this.state.name,
-        game: this.state.game || null
+        game: this.state.game || null,
+        field: this.state.field || null
       },
       settings: this.settings,
       players: this.players,

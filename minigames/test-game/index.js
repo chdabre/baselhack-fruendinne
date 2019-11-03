@@ -3,10 +3,11 @@ const button = document.getElementById('btn')
 
 const params = new URLSearchParams(window.location.search)
 const playerId = params.get('playerId')
+const players = JSON.parse(params.get('players'))
 
 let gameEnded = false
 let playerScores = {}
-playerScores[playerId] = 0
+for (let i = 0; i < players.length; i++) playerScores[i] = 0
 gameEl.innerText = playerScores[playerId]
 
 button.addEventListener('click', event => {
@@ -17,7 +18,7 @@ button.addEventListener('click', event => {
     source: 'minigame',
     playerId,
     score: playerScores[playerId]
-  }, 'http://localhost:8081')
+  }, '*')
 })
 
 window.addEventListener('message', msg => {
@@ -51,12 +52,24 @@ function testWin () {
 
 function sendWinSignal (playerScores) {
   if (!gameEnded) {
+    const ranking = Object.keys(playerScores).sort((a,b) => playerScores[b] - playerScores[a])
+
+    const points = new Array(players.length).fill(0)
+    Object.keys(playerScores).forEach(key => {
+      points[parseInt(key)] = playerScores[key]
+    })
+
+    console.log(ranking, points)
+
     setTimeout(() => {
       parent.postMessage({
         source: 'minigame',
         event: 'win',
-        playerScores
-      }, 'http://localhost:8081')
+        playerScores: {
+          ranking,
+          points
+        }
+      }, '*')
 
       gameEnded = true
     }, 1000)

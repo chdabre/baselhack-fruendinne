@@ -4,14 +4,22 @@
 <head>
     <meta charset="utf-8">
     <title>Hello World</title>
-</head>
-<script src="pixi/pixi.min.js"></script>
+    <script src="pixi/pixi.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css"></head>
 
 <body>
-  <script src="index.js"></script>
-    
   <h1 id="you_win" style="display: none;">You Win!</h1>
   <h1 id="you_lose" style="display: none;">You Lose!</h1>
+
+  <div id="clicker_div">
+    <button id="clicker" onClick="onClick()" >Click Me</button>
+  </div>
+  <div id="fertig_div">
+    <button id="fertig" onClick="onFertig()">Finish</button>
+  </div>
+    
+
+  <script src="index.js"></script>
 
 </body>
 
