@@ -121,6 +121,19 @@ function main() {
   rect1.buttonMode = true
   rect1.on("pointerdown", onclick)
 
+  const textStyle = new PIXI.TextStyle({
+    fontFamily: 'pixelsplitterregular',
+    fontSize: 36
+  })
+
+  const text = new PIXI.Text("Click me", textStyle)
+  text.anchor.set(0.5)
+  text.x = (innerWidth / 2)
+  text.y = 642
+
+  app.stage.addChild(text)
+
+
 
   // todo: set the step-size for the filling rate:
   const step = 20
