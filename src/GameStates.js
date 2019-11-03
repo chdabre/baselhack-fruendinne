@@ -47,7 +47,13 @@ export class StateRulesMain {
   startGame () {
     //this.session.setState(new StatePlayerTurn(this.session))
     //this.session.playerTurn = 0
-    const miniGame = _.sample(this.session.minigames)
+
+    // If you want a random game, use the following line (also change in method "startMiniGame()"
+    // const miniGame = _.sample(this.session.minigames)
+    // If you want a specific, use the following line (also change in method "startMiniGame()"
+    const miniGame = this.session.minigames[0];
+
+
     this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
@@ -103,8 +109,14 @@ export class StateMove {
   }
 
   startMiniGame () {
-    //const miniGame = _.sample(this.session.minigames)
-    const miniGame = _.find(this.session.minigames, { name: 'test-game' })
+    // If you want a random game, use the following line (also change in method "startMiniGame()"
+    // const miniGame = _.sample(this.session.minigames)
+
+    // If you want a specific, use the following line (also change in method "startMiniGame()"
+    const miniGame = this.session.minigames[0];
+    // Alternative: find the game via its name:
+    // const miniGame = _.find(this.session.minigames, { name: 'fill' })
+
     this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
