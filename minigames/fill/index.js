@@ -1,4 +1,4 @@
-// minigame "raten"
+// minigame "fill"
 let type = "WebGL";
 if (!PIXI.utils.isWebGLSupported()) {
   type = "canvas"
