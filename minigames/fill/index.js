@@ -41,7 +41,6 @@ const loader = PIXI.loader;
 //load assets and on Complete run setup()
 loader
   // .add('click_here', 'assets/click_here.png')
-  // .add('fertig', 'assets/fertig.png')
   .load(setup)
 
 
@@ -126,13 +125,19 @@ function main() {
     fontSize: 36
   })
 
+/*
   const text = new PIXI.Text("Click me", textStyle)
   text.anchor.set(0.5)
   text.x = (innerWidth / 2)
   text.y = 642
-
   app.stage.addChild(text)
+*/
 
+  const clickHere = new PIXI.Sprite.from('assets/ClickHere.png')
+  clickHere.anchor.set(0.5)
+  clickHere.x = (innerWidth / 2)
+  clickHere.y = 642
+  app.stage.addChild(clickHere)
 
 
   // todo: set the step-size for the filling rate:
