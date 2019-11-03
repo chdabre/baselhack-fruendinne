@@ -1,7 +1,13 @@
 <template>
   <div>
+    <!-- Generic State-Based Views -->
+    <template v-if="session && StateComponents[session.state.name]">
+      <component
+        :is="StateComponents[session.state.name]"
+      ></component>
+    </template>
     <PlayingField
-      v-if="session"
+      v-else-if="session"
       :board="session.board"
     />
   </div>
@@ -11,11 +17,20 @@
 import { mapState } from 'vuex'
 import PlayingField from '../components/PlayingField'
 
+const StateComponents = {
+  'StateWaitingForPlayers': () => import('../states/StateWaitingForPlayers.vue')
+}
+
 export default {
   name: 'main-game',
   components: { PlayingField },
   props: {
     id: String
+  },
+  data () {
+    return {
+      StateComponents
+    }
   },
   computed: {
     ...mapState([ 'session' ])
