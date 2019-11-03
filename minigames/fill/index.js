@@ -212,7 +212,7 @@ function testWin() {
       }
         // I am the master player and must report the results
       if (validScores && playerId === '0') {
-        setTimeout(() => sendWinSignal(playerScores), 1000)
+        setTimeout(() => sendWinSignal(playerScores), 2000)
       }
     }
   })
