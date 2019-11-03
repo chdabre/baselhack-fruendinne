@@ -15,7 +15,7 @@ if (!PIXI.utils.isWebGLSupported()) {
   type = "canvas"
 }
 
-//Main game 
+//Main game
 //Create a Pixi Application
 const app = new PIXI.Application({
   height: innerHeight,
@@ -43,22 +43,22 @@ loader
 //game setup function
 function setup() {
     //setup readyPlayers Object
-    for(player in players){
-        readyPlayers[player] = false;
+    for(player in players) {
+      readyPlayers[player] = false;
 
-      var START_DATE_2 = new Date(); // put in the starting date here
-      var INTERVAL_2 = 0.366; // in seconds
-      var INCREMENT_2 = 1; // increase per tick
-      var START_VALUE_2 = 738160; // initial value when it's the start date
-      var count_2 = 0;
+      // var START_DATE_2 = new Date(); // put in the starting date here
+      // var INTERVAL_2 = 0.366; // in seconds
+      // var INCREMENT_2 = 1; // increase per tick
+      // var START_VALUE_2 = 738160; // initial value when it's the start date
+      // var count_2 = 0;
 
-      window.addEventListener('load', function() {
-        var msInterval = INTERVAL_2 * 1000;
-        var now = new Date();
-        count_2 = parseInt((now - START_DATE_2) / msInterval) * INCREMENT_2 + START_VALUE_2;
-        document.getElementById('counter_2').innerHTML = count;
-        setInterval("count_2 += INCREMENT_2; document.getElementById('counter_2').innerHTML = count_2;", msInterval);
-      });
+      // window.addEventListener('load', function() {
+        // var msInterval = INTERVAL_2 * 1000;
+        // var now = new Date();
+        // count_2 = parseInt((now - START_DATE_2) / msInterval) * INCREMENT_2 + START_VALUE_2;
+        // document.getElementById('counter_2').innerHTML = count;
+        // setInterval("count_2 += INCREMENT_2; document.getElementById('counter_2').innerHTML = count_2;", msInterval);
+      // });
     }
 
 
