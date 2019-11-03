@@ -182,12 +182,31 @@ function testWin() {
 
 
 function sendWinSignal(playerScores) {
+  let ranking = Object.keys(playerScores).sort((a, b) => {
+    return playerScores[a] - playerScores[b];
+  })
+
+  //ranking = Object.keys(playerScores)
+  console.log(Object.keys(playerScores).sort((a, b) => {
+    return playerScores[a] - playerScores[b];
+  }))
+
+  let points = Array.from(ranking);
+  for(let i = 0; i<ranking.length; i++){
+    points[i] = playerScores[ranking[i]];
+  }
+
+  let winReturn = {ranking, points};
+
+  console.log("WIN RETURN:")
+  console.log(winReturn)
+
   if (!gameEnded) {
-    parent.postMessage({
+    setTimeout(parent.postMessage({
       source: 'minigame',
       event: 'win',
-      playerScores
-    }, 'http://localhost:8081')
+      playerScores: winReturn,
+    }, 'http://localhost:8081'), 2000)
 
     gameEnded = true
   }

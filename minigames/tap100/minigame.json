@@ -1,3 +1,5 @@
 {
-  "name": "tap100"
+  "name": "tap100",
+  "displayName": "100 Taps",
+  "description": "Taps as fast as you can 100x on the button to win the game!"
 }
