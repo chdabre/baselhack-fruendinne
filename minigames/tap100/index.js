@@ -4,10 +4,13 @@ const players = JSON.parse(params.get('players')) //array of all player
 let readyPlayers = {};
 let mainExecuted = false
 
+
 let gameEnded = false
 let playerScores = {}
 let readyState = false; //true if all players are ready
 playerScores[playerId] = 0
+
+let counter = 0;
 
 
 
@@ -24,7 +27,7 @@ const app = new PIXI.Application({
   height: innerHeight,
   width: innerWidth,
   antialias: true,
-  backgroundColor: 0x212121
+  backgroundColor: 0xffffff
 });
 document.body.appendChild(app.view);
 
@@ -38,7 +41,8 @@ const loader = PIXI.loader;
 
 //load assets and on Complete run setup()
 loader
-  .add('button', 'assets/flintstone.png')
+  .add('click_here', 'assets/click_here.png')
+  .add('fertig', 'assets/fertig.png')
   .load(setup)
 
 
@@ -80,21 +84,57 @@ function setup() {
 function main() {
   mainExecuted = true
 
-  let text = new PIXI.Text(playerScores[playerId])
-  let button = new PIXI.Sprite(loader.resources.button.texture)
-  let button = new PIXI.Sprite
-  button.interactive = true
-  button.buttonMode = true
+  let clickHere = new PIXI.Sprite(loader.resources.click_here.texture)
+  let fertig = new PIXI.Sprite(loader.resources.fertig.texture)
 
 
-  button.on('pointerdown', () => {
-    playerScores[playerId] += 10
-    text.text = playerScores[playerId]
-    updateClients()
+  let text = new PIXI.Text(playerScores[playerId], {
+    fontFamily: 'Arial',
+    fontSize: 24,
+    fill: 0xffffff,
+    align: 'center'
+  });
+
+  text.visible = false;
+
+  // Set the initial position
+  text.anchor.set(0.5);
+  text.x = app.screen.width / 2;
+  text.y = (app.screen.height / 2)-text.height*2;
+
+  click_here.anchor.set(0.5);
+  click_here.x = app.screen.width / 2;
+  click_here.y = (app.screen.height / 2);
+
+  fertig.anchor.set(0.5);
+  fertig.x = app.screen.width / 2;
+  fertig.y = (app.screen.height / 2) + fertig.height*2;
+
+
+  
+  // Opt-in to interactivity
+  click_here.interactive = true;
+  fertig.interactive = true;
+
+
+  // Shows hand cursor
+  click_here.buttonMode = true;
+  fertig.buttonMode = true;
+
+
+  click_here.on('pointerdown', () => {
+    counter++;
   })
 
+  fertig.on('pointerdown', () => {
+    let diff = 100 - count;
+    playerScores[playerId] = Math.abs(diff);
+    updateClients();
+  })
+
+  app.stage.addChild(click_here)
+  app.stage.addChild(fertig)
   app.stage.addChild(text)
-  app.stage.addChild(button)
 
 
 }
@@ -126,7 +166,7 @@ function testStart(data){
 
 function testWin() {
   Object.keys(playerScores).forEach(key => {
-    if (playerScores[key] >= 100) {
+    if (playerScores[key] > 0) {
       // Someone has won.
       if (key === playerId) {
         // I have won.
