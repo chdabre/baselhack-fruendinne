@@ -13,12 +13,14 @@ export class StateWaitingForPlayers {
     if (this.session.players.length < MAX_PLAYERS) {
       const existingPlayer = _.find(this.session.players, player => player.name === name)
       if (!existingPlayer) {
-        return this.session.players.push({
+        const index = this.session.players.push({
           name,
           score: 0,
           position: Math.floor(BOARD_SIZE / 2),
           dino: this.dinos.pop()
         })
+        this.session.update()
+        return index
       } else {
         throw 'NameAlreadyTaken'
       }
@@ -59,12 +61,14 @@ export class StatePlayerTurn {
   }
 
   incrementPlayerTurn () {
-    this.session.playerTurn++
+    this.session.playerTurn += 1
     if (this.session.playerTurn > this.session.players.length - 1) this.session.playerTurn = 0
+    this.session.update()
   }
 
   startMove (diceResult) {
-    this.session.state = new StateMove(this.session, diceResult)
+    this.session.setState(new StateMove(this.session, diceResult))
+    this.session.state.move()
   }
 }
 export class StateMove {
@@ -74,9 +78,9 @@ export class StateMove {
     this.numSteps = numSteps
   }
 
-  moveSteps (numSteps) {
+  move () {
     const playerTurn = this.session.playerTurn
-    this.session.players[playerTurn].position += numSteps
+    this.session.players[playerTurn].position += this.numSteps
 
     if (this.session.players[playerTurn].position < 0) { // Field before the start
       this.session.players[playerTurn].position = 0
@@ -85,10 +89,9 @@ export class StateMove {
     }
 
     const targetField = this.session.board[this.session.players[playerTurn].position]
-
     switch (targetField.type) {
       case 'basic':
-        this.session.state = new StatePlayerTurn(this.session, true)
+        this.session.setState(new StatePlayerTurn(this.session, true))
         break
       case 'miniGame':
         this.startMiniGame()
@@ -100,16 +103,17 @@ export class StateMove {
   }
 
   startMiniGame () {
-    const miniGame = _.sample(this.session.minigames)
-    this.session.state = new StateMiniGame(this.session, miniGame)
+    //const miniGame = _.sample(this.session.minigames)
+    const miniGame = _.find(this.session.minigames, { name: 'test-game' })
+    this.session.setState(new StateMiniGame(this.session, miniGame))
   }
 
   doSpecialAction (field) {
-    this.session.state = new StateRulesSpecialField(this.session, field)
+    this.session.setState(new StateRulesSpecialField(this.session, field))
   }
 
   win () {
-    this.session.state = new StateWin(this.session)
+    this.session.setState(new StateWin(this.session))
   }
 }
 export class StateRulesSpecialField {
@@ -135,11 +139,13 @@ export class StateMiniGame {
   }
 
   endMinigame (playerScores) {
-    Object.keys(playerScores).forEach(key => {
-      this.session.players[key].score += playerScores[key]
-    })
+    const points = playerScores.points
+    for (let i = 0; i < this.session.players.length; i++) {
+      this.session.players[i].score += points[i]
+    }
 
-    this.session.state = new StateRulesMain(this.session)
+    this.session.setState(new StateMiniGameResult(this.session, playerScores))
+    this.session.state.moveMiniGame()
   }
 }
 export class StateMiniGameResult {
@@ -150,7 +156,8 @@ export class StateMiniGameResult {
   }
 
   moveMiniGame () {
-    this.session.state = new StateMoveMiniGame(this.session, this.playerScores)
+    this.session.setState(new StateMoveMiniGame(this.session, this.playerScores))
+    this.session.state.move()
   }
 }
 export class StateMoveMiniGame {
@@ -160,18 +167,11 @@ export class StateMoveMiniGame {
     this.playerScores = playerScores
   }
 
-  moveSteps () {
+  move () {
     const ranking = this.playerScores.ranking
-    let playerMoves = new Array(ranking.length).fill(0)
-
-    // How much does each player move
     for (let i = 0; i < ranking.length; i++) {
-      playerMoves[ranking[i]] = (ranking.length / 2) - i
-    }
-
-    for (let j = 0; j < playerMoves.length; j++) {
-      const numSteps = playerMoves[i]
-      this.session.players[i].position += numSteps
+      // How much does each player move
+      this.session.players[parseInt(ranking[i])].position += (ranking.length / 2) - i
 
       if (this.session.players[i].position < 0) { // Field before the start
         this.session.players[i].position = 0
@@ -179,12 +179,11 @@ export class StateMoveMiniGame {
         this.win()
       }
     }
-
-    this.session.state = new StatePlayerTurn(this.session, true)
+    this.session.setState(new StatePlayerTurn(this.session, true))
   }
 
   win () {
-    this.session.state = new StateWin(this.session)
+    this.session.setState(new StateWin(this.session))
   }
 }
 export class StateWin {
@@ -194,6 +193,6 @@ export class StateWin {
   }
 
   rematch () {
-    this.session.state = new StateRulesMain(this.session)
+    this.session.setState(new StateRulesMain(this.session))
   }
 }

@@ -31,7 +31,7 @@ export default {
     }
   },
   sockets: {
-    SESSION (msg) {
+    SESSION_UPDATE (msg) {
       this.$store.commit('setSession', msg)
       this.$router.push({
         name: 'main',

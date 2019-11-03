@@ -6,7 +6,8 @@
   "author": "Dario Breitenstein <online@imakethings.ch>",
   "license": "MIT",
   "scripts": {
-    "start": "node -r esm src/index.js"
+    "start": "node -r esm src/index.js",
+    "heroku-postbuild": "cd client && yarn && yarn build && cd ../host && yarn && yarn build"
   },
   "dependencies": {
     "esm": "^3.2.25",
