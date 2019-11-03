@@ -87,7 +87,9 @@ export default class GameSession extends EventEmitter {
       state: {
         name: this.state.name,
         game: this.state.game || null,
-        field: this.state.field || null
+        field: this.state.field || null,
+        playerScores: this.state.playerScores || null,
+        winPlayer: this.state.winPlayer || null,
       },
       settings: this.settings,
       players: this.players,

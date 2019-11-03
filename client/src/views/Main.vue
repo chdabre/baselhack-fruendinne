@@ -11,6 +11,15 @@
       >Everyone's Ready</v-btn>
     </template>
 
+    <!-- Rematch Button -->
+    <template v-if="session && session.state.name === 'StateWin' && playerId === 0">
+      <v-btn
+        block
+        color="primary"
+        @click="rematch"
+      >New Game</v-btn>
+    </template>
+
     <!-- Minigame -->
     <Minigame
       v-if="session && session.state.name === 'StateMiniGame'"
@@ -58,6 +67,9 @@ export default {
   methods: {
     playersReady () {
       this.$socket.emit('playersReady', { sessionId: this.id })
+    },
+    rematch () {
+      this.$socket.emit('rematch', { sessionId: this.id })
     }
   },
   sockets: {

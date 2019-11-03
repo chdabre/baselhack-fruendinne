@@ -18,7 +18,11 @@ import { mapState } from 'vuex'
 import PlayingField from '../components/PlayingField'
 
 const StateComponents = {
-  'StateWaitingForPlayers': () => import('../states/StateWaitingForPlayers.vue')
+  'StateWaitingForPlayers': () => import('../states/StateWaitingForPlayers.vue'),
+  'StateRulesMain': () => import('../states/StateRulesMain.vue'),
+  'StateMiniGame': () => import('../states/StateMiniGame.vue'),
+  'StateMiniGameResult': () => import('../states/StateMiniGameResult.vue'),
+  'StateWin': () => import('../states/StateWin.vue')
 }
 
 export default {
