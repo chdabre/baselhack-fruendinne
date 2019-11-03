@@ -162,11 +162,11 @@ function sendWinSignal(playerScores) {
   console.log(winReturn)
 
   if (!gameEnded) {
-    parent.postMessage({
+    setTimeout(parent.postMessage({
       source: 'minigame',
       event: 'win',
       playerScores: winReturn,
-    }, 'http://localhost:8081')
+    }, 'http://localhost:8081'), 2000)
 
     gameEnded = true
   }
