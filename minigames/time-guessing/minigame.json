@@ -1,0 +1,5 @@
+{
+  "name": "time-guessing",
+  "displayName": "Guess how long a minute is!",
+  "description": "The player who presses the button closest to the one minute mark wins the game."
+}
