@@ -3,42 +3,57 @@ import * as _ from 'lodash'
 import * as GameStates from './GameStates'
 import Minigame from './Minigame'
 
-const MIN_PLAYERS = 2
-const MAX_PLAYERS = 10
+export const MIN_PLAYERS = 2
+export const MAX_PLAYERS = 10
+
+export const BOARD_SIZE = 50
+
+export const SPECIAL_TYPES = [
+  'switch',
+  'sendBack',
+  'sendForward',
+  'goForward',
+  'goBack'
+]
 
 export default class GameSession {
   constructor () {
     this.id = makeId(4)
-
     this.state = new GameStates.StateWaitingForPlayers()
-
     this.settings = {}
     this.players = []
+    this.playerTurn = 0
+    this.board = this.createBoard()
     this.minigames = Minigame.loadGames()
   }
 
-  addPlayer (name) {
-    if (this.state.name === 'StateWaitingForPlayers') {
-      if (this.players.length < MAX_PLAYERS) {
-        const existingPlayer = _.find(this.players, player => player.name === name)
-        if (!existingPlayer) {
-          return this.players.push({
-            name,
-            score: 0
-          })
-        } else {
-          throw 'NameAlreadyTaken'
-        }
-      } else {
-        throw 'MaxPlayerCountExceeded'
-      }
-    } else {
-      throw 'InvalidState'
-    }
-  }
+  createBoard () {
+    const NUM_BASIC = 27
+    const NUM_MINIGAMES = 15
+    const NUM_SPECIAL = 8
 
-  startGame () {
-    this.startMinigame()
+    let board = []
+    // Add Basic fields
+    for (let i = 0; i < NUM_BASIC; i++) {
+      board.push({
+        type: 'basic'
+      })
+    }
+    // Add MiniGame fields
+    for (let j = 0; j < NUM_MINIGAMES; j++) {
+      board.push({
+        type: 'miniGame'
+      })
+    }
+    // Add Special fields
+    for (let k = 0; k < NUM_SPECIAL; k++) {
+      board.push({
+        type: 'special',
+        special: _.sample(SPECIAL_TYPES)
+      })
+    }
+
+    return _.shuffle(board)
   }
 
   startMinigame () {

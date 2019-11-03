@@ -15,6 +15,13 @@ app.use(express.static(path.join(__dirname, '../host/dist')))
 app.use('/client', express.static(path.join(__dirname, '../client/dist')))
 app.use('/minigame', express.static(path.join(__dirname, '../minigames')))
 
+app.get('/client/*', (req, res) => {
+  res.sendfile(path.join(__dirname, '../client/dist/index.html'))
+})
+app.get('/', (req, res) => {
+  res.sendfile(path.join(__dirname, '../host/dist/index.html'))
+})
+
 http.listen(PORT, () => {
   console.log('listening on *' + PORT)
 
