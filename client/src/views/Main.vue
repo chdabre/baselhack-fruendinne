@@ -32,7 +32,8 @@ import NameForm from './NameForm'
 import Minigame from './Minigame'
 
 const StateComponents = {
-  'StateRulesMain': () => import('../states/StateRulesMain.vue')
+  'StateRulesMain': () => import('../states/StateRulesMain.vue'),
+  'StatePlayerTurn': () => import('../states/StatePlayerTurn.vue')
 }
 
 export default {
@@ -60,7 +61,8 @@ export default {
     }
   },
   sockets: {
-    SESSION (msg) {
+    SESSION_UPDATE (msg) {
+      console.log('Session Update -> ' + msg.state.name)
       this.$store.commit('setSession', msg)
     },
     ERROR (msg) {

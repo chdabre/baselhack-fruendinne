@@ -7,7 +7,7 @@ import vuetify from './plugins/vuetify'
 
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: typeof webpackHotUpdate !== 'undefined' ? `http://localhost:3000` : `http://${window.location.host}`,
+  connection: typeof webpackHotUpdate !== 'undefined' ? `http://localhost:3000` : window.location.origin,
   vuex: {
     store,
     actionPrefix: 'SOCKET_',
