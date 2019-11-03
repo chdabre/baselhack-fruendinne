@@ -16,10 +16,23 @@ export const SPECIAL_TYPES = [
   'goBack'
 ]
 
+export const DINO_TYPES = [
+  'norbert',
+  'lennard',
+  'britney',
+  'melvin',
+  'kevin',
+  'laurie',
+  'martha',
+  'drphil',
+  'gilbert',
+  'rita'
+]
+
 export default class GameSession {
   constructor () {
     this.id = makeId(4)
-    this.state = new GameStates.StateWaitingForPlayers()
+    this.state = new GameStates.StateWaitingForPlayers(this)
     this.settings = {}
     this.players = []
     this.playerTurn = 0
@@ -74,5 +87,19 @@ export default class GameSession {
     })
 
     this.state = new GameStates.StateGameIdle()
+  }
+
+  toObject() {
+    return {
+      id: this.id,
+      state: {
+        name: this.state.name
+      },
+      settings: this.settings,
+      players: this.players,
+      playerTurn: this.playerTurn,
+      board: this.board,
+      minigames: this.minigames,
+    }
   }
 }

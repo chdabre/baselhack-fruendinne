@@ -7,8 +7,8 @@
       <v-btn
         block
         color="primary"
-        @click="startGame"
-      >Start Game</v-btn>
+        @click="playersReady"
+      >Everyone's Ready</v-btn>
     </template>
 
     <!-- Minigame -->
@@ -17,17 +17,12 @@
       :game="session.state.game"
     ></Minigame>
 
-    <!-- Idle -->
-    <div
-      v-if="session && session.state.name === 'StateGameIdle'"
-    >
-      {{ session.players }}
-      <v-btn
-        block
-        color="primary"
-        @click="startGame"
-      >New Minigame</v-btn>
-    </div>
+    <!-- Generic State-Based Views -->
+    <template v-if="session && StateComponents[session.state.name]">
+      <component
+        :is="StateComponents[session.state.name]"
+      ></component>
+    </template>
   </v-container>
 </template>
 
@@ -36,11 +31,20 @@ import { mapState } from 'vuex'
 import NameForm from './NameForm'
 import Minigame from './Minigame'
 
+const StateComponents = {
+  'StateRulesMain': () => import('../states/StateRulesMain.vue')
+}
+
 export default {
   name: 'main-game',
   components: { Minigame, NameForm },
   props: {
     id: String
+  },
+  data () {
+    return {
+      StateComponents
+    }
   },
   computed: {
     ...mapState([ 'session', 'playerId' ])
@@ -51,8 +55,8 @@ export default {
     }
   },
   methods: {
-    startGame () {
-      this.$socket.emit('startGame', { sessionId: this.id })
+    playersReady () {
+      this.$socket.emit('playersReady', { sessionId: this.id })
     }
   },
   sockets: {
