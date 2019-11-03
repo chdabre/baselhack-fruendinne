@@ -10,7 +10,6 @@ let playerScores = {}
 let readyState = false; //true if all players are ready
 playerScores[playerId] = 0
 
-let counter = 0;
 
 
 
@@ -58,14 +57,17 @@ function setup() {
       if (msg.data.source === 'minigame') {
         if (msg.data.playerId !== playerId) {
           playerScores[msg.data.playerId] = msg.data.score
+
         }
         if(testStart(msg.data)){
             readyState = true;
+            console.log("all ready")
             if(!mainExecuted) main();
         if (!readyState) {
             console.log("not all clients are ready!")
         }
         }
+        console.log(playerScores)
         testWin()
       }
     })
@@ -84,8 +86,9 @@ function setup() {
 function main() {
   mainExecuted = true
 
-  let clickHere = new PIXI.Sprite(loader.resources.click_here.texture)
+  let click_here = new PIXI.Sprite(loader.resources.click_here.texture)
   let fertig = new PIXI.Sprite(loader.resources.fertig.texture)
+  var clickCount = 0;
 
 
   let text = new PIXI.Text(playerScores[playerId], {
@@ -123,11 +126,12 @@ function main() {
 
 
   click_here.on('pointerdown', () => {
-    counter++;
+    clickCount++;
   })
 
   fertig.on('pointerdown', () => {
-    let diff = 100 - count;
+    let diff = 100 - clickCount;
+    console.log(playerScores)
     playerScores[playerId] = Math.abs(diff);
     updateClients();
   })
@@ -166,7 +170,9 @@ function testStart(data){
 
 function testWin() {
   Object.keys(playerScores).forEach(key => {
-    if (playerScores[key] > 0) {
+    console.log(playerScores.keys)
+    console.log(players)
+    if (playerScores.length === players.length) {
       // Someone has won.
       if (key === playerId) {
         // I have won.

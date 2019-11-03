@@ -28,7 +28,7 @@ export class StateWaitingForPlayers {
   }
 
   playersReady () {
-    if (this.session.players.length >= 3) {
+    if (this.session.players.length >= 2) {
       this.session.state = new StateRulesMain(this.session)
     } else {
       throw 'NotEnoughPlayers'
@@ -139,7 +139,7 @@ export class StateMiniGame {
       this.session.players[key].score += playerScores[key]
     })
 
-    this.session.state = new GameStates.StateRulesMain()
+    this.session.state = new StateRulesMain(this.session)
   }
 }
 export class StateMiniGameResult {
