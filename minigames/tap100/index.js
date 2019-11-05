@@ -53,7 +53,7 @@ function setup() {
       playerId,
       score: playerScores[playerId],
       ready: true,
-    }, 'http://localhost:8081')
+    }, '*')
 
   }
 
@@ -89,7 +89,7 @@ function updateClients(){
     source: 'minigame',
     playerId,
     score: playerScores[playerId],
-  }, 'http://localhost:8081')
+  }, '*')
 }
 
 function testStart(data){
@@ -109,7 +109,7 @@ function testWin() {
     console.log(players)
     if (Object.keys(playerScores).length === players.length) {
       // Someone has won.
-    
+
       if(playerScores[key] == 0){
         if (key === playerId) {
           // I have won.
@@ -133,9 +133,9 @@ function testWin() {
       if (validScores && playerId === '0') {
         setTimeout(sendWinSignal(playerScores), 1000)
       }
-      
 
-      
+
+
     }
   })
 }
@@ -166,7 +166,7 @@ function sendWinSignal(playerScores) {
       source: 'minigame',
       event: 'win',
       playerScores: winReturn,
-    }, 'http://localhost:8081'), 2000)
+    }, '*), 2000)
 
     gameEnded = true
   }

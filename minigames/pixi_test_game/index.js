@@ -19,7 +19,7 @@ if (!PIXI.utils.isWebGLSupported()) {
 PIXI.utils.sayHello(type)
 
 
-//Main game 
+//Main game
 //Create a Pixi Application
 const app = new PIXI.Application({
   height: innerHeight,
@@ -82,58 +82,58 @@ function main() {
       fill: 0xffffff,
       align: 'center'
     });
-  
-  
-  
+
+
+
     // Set the initial position
     sprite.anchor.set(0.5);
     sprite.x = app.screen.width / 2;
     sprite.y = app.screen.height / 2;
-  
-  
+
+
     // Opt-in to interactivity
     sprite.interactive = true;
-  
+
     // Shows hand cursor
     sprite.buttonMode = true;
-  
+
     // Pointers normalize touch and mouse
     sprite.on('pointerdown', onClick)
-  
+
     // Alternatively, use the mouse & touch events:
     // sprite.on('click', onClick); // mouse-only
     // sprite.on('tap', onClick); // touch-only
-  
+
     app.stage.addChild(sprite);
     app.stage.addChild(text);
-  
+
     //Do stuff every animation Frame FPS = 60 max
     app.ticker.minFPS = 30;
     app.ticker.maxFPS = 60;
     app.ticker.add(() => {
       sprite.angle += 1;
-  
-  
+
+
     })
-  
-  
+
+
     function onClick() {
       sprite.scale.x *= 1.25;
       sprite.scale.y *= 1.25;
       sprite.angle += 30;
       sprite.tint = Math.random() * 0xFFFFFF;
-  
+
       //update score
       playerScores[playerId]++;
       text.text = playerScores[playerId]
       console.log(playerScores[playerId])
-  
+
       parent.postMessage({
         source: 'minigame',
         playerId,
         score: playerScores[playerId],
-      }, 'http://localhost:8081')
-  
+      }, '*')
+
       console.log(players)
     }
 }
@@ -146,7 +146,7 @@ loader.on("complete", () => {
     playerId,
     score: playerScores[playerId],
     ready: true,
-  }, 'http://localhost:8081')
+  }, '*')
 
 })
 
@@ -206,7 +206,7 @@ function sendWinSignal(playerScores) {
       source: 'minigame',
       event: 'win',
       playerScores: winReturn,
-    }, 'http://localhost:8081'), 2000)
+    }, '*'), 2000)
 
     gameEnded = true
   }

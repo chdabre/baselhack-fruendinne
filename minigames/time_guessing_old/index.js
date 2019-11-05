@@ -84,7 +84,7 @@ loader.on("complete", () => {
     playerId,
     score: playerScores[playerId],
     ready: true,
-  }, 'http://localhost:8081')
+  }, '*')
 
 })
 
@@ -151,7 +151,7 @@ function main() {
       source: 'minigame',
       playerId,
       score: playerScores[playerId],
-    }, 'http://localhost:8081')
+    }, '*')
 
     console.log(players)
 
@@ -196,7 +196,7 @@ function sendWinSignal(playerScores) {
       source: 'minigame',
       event: 'win',
       playerScores
-    }, 'http://localhost:8081')
+    }, '*')
 
     gameEnded = true
   }

@@ -36,7 +36,7 @@ function setup() {
   }
 
 
-  
+
   console.log(num)
 
   // Event Listener
@@ -105,7 +105,7 @@ function main() {
     fill: 0x000000,
     align: 'center'
   });
-  
+
   text.y = (app.screen.height / 2)-text.height
 
 
@@ -136,7 +136,7 @@ function main() {
       source: 'minigame',
       playerId,
       score: playerScores[playerId],
-    }, 'http://localhost:8081')
+    }, '*')
 
     console.log("players" + players)
   }
@@ -179,7 +179,7 @@ function testWin() {
           document.getElementById('you_lose').style.display = 'block'
         }
 
-        
+
       }
       // I am the master player and must report the results
       if (playerId === '0') {
@@ -200,9 +200,9 @@ function sendWinSignal(playerScores) {
     let ranking = Object.keys(playerScores).sort((a, b) => {
       return playerScores[a] - playerScores[b];
     })
-  
 
-    
+
+
   let points = Array.from(ranking);
   for(let i = 0; i<ranking.length; i++){
     points[i] = playerScores[ranking[i]];
@@ -215,14 +215,14 @@ function sendWinSignal(playerScores) {
       source: 'minigame',
       event: 'win',
       playerScores: winReturn,
-    }, 'http://localhost:8081')
+    }, '*')
 
 
 }
 
 
 //document.getElementById("numInput").onsubmit = function(e){
-  
+
 document.getElementById("numInput").addEventListener("submit", (e) => {
   e.preventDefault();
   let inputNumber = document.getElementById("forminput").value;
@@ -239,7 +239,7 @@ document.getElementById("numInput").addEventListener("submit", (e) => {
     playerId,
     score: playerScores[playerId],
     inputNumber: playerResult[playerId],
-  }, 'http://localhost:8081')
+  }, '*')
 })
 
 
@@ -285,7 +285,7 @@ function getCalculation() {
         ops2: ops[2],
         ops3: ops[3],
         result: calcResult,
-      }, 'http://localhost:8081')
+      }, '*')
     }
 
   }

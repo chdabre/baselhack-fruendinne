@@ -77,7 +77,7 @@ function setup() {
     playerId,
     score: playerScores[playerId],
     ready: true,
-  }, 'http://localhost:8081')
+  }, '*')
 
 }
 
@@ -179,7 +179,7 @@ function updateClients(){
     source: 'minigame',
     playerId,
     score: playerScores[playerId],
-  }, 'http://localhost:8081')
+  }, '*')
 
   console.log(`updateClients finished. playerId: ${playerId}, playerScores[playerId]: ${playerScores[playerId]}`)
 }
@@ -262,7 +262,7 @@ function sendWinSignal(playerScores) {
       source: 'minigame',
       event: 'win',
       playerScores: winReturn,
-    }, 'http://localhost:8081')
+    }, '*')
 
     gameEnded = true
   }

@@ -32,7 +32,7 @@ button.addEventListener('click', event => {
     source: 'minigame',
     playerId,
     score: playerScores[playerId]
-  }, 'http://localhost:8081')
+  }, '*')
 
 });
 
@@ -99,7 +99,7 @@ function sendWinSignal(playerScores) {
       source: 'minigame',
       event: 'win',
       playerScores: winReturn,
-    }, 'http://localhost:8081')
+    }, '*')
 
     gameEnded = true
   }
@@ -146,7 +146,7 @@ function setup() {
     playerId,
     score: playerScores[playerId],
     ready: true,
-  }, 'http://localhost:8081')
+  }, '*')
 
   //needs to move to beginning of setup for testing the game
   main()
